@@ -19,11 +19,6 @@ def DenseNet(input_shape=None, depth=40, nb_dense_block=3, growth_rate=12, nb_fi
              include_top=True, weights=None, input_tensor=None,
              classes=10, activation='softmax'):
 
-    if weights not in {'imagenet', None}:
-        raise ValueError('The `weights` argument should be either '
-                         '`None` (random initialization) or `cifar10` '
-                         '(pre-training on CIFAR-10).')
-
     if activation not in ['softmax', 'sigmoid']:
         raise ValueError('activation must be one of "softmax" or "sigmoid"')
 
