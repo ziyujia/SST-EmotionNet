@@ -44,3 +44,18 @@ We evaluate our model on SEED and SEED-IV datasets, which are available at: http
   ```
     python run.py -c ./config/SEED.ini
   ```
+
+# References
+
+```latex
+@inproceedings{jia2020sst,
+  title={SST-EmotionNet: Spatial-spectral-temporal based attention 3D dense network for EEG emotion recognition},
+  author={Jia, Ziyu and Lin, Youfang and Cai, Xiyang and Chen, Haobin and Gou, Haijun and Wang, Jing},
+  booktitle={Proceedings of the 28th ACM International Conference on Multimedia},
+  pages={2909--2917},
+  year={2020}
+}
+```
+
+
+
