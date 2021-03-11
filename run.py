@@ -63,10 +63,12 @@ def read_config(config_path):
     if not os.path.exists(model_save_path):
         os.mkdir(model_save_path)
 
-    global input_width, specInput_length, temInput_length, depth_spec, depth_tem, gr_spec, gr_tem, nb_dense_block, nb_class
-    input_width = int(conf['model']['input_width'])
-    specInput_length = int(conf['model']['specInput_length'])
-    temInput_length = int(conf['model']['temInput_length'])
+    global input_width, specInput_length, temInput_length
+    input_width = int(conf['data']['input_width'])
+    specInput_length = int(conf['data']['specInput_length'])
+    temInput_length = int(conf['data']['temInput_length'])
+
+    global depth_spec, depth_tem, gr_spec, gr_tem, nb_dense_block, nb_class
     depth_spec = int(conf['model']['depth_spec'])
     depth_tem = int(conf['model']['depth_tem'])
     gr_spec = int(conf['model']['gr_spec'])
@@ -92,29 +94,39 @@ def run():
     all_result_file = open(os.path.join(result_path, 'all_result.txt'), "w")
     all_result_file.close()
     
-    for i in range(15):
+    for i in range(1, 16):
         all_result_file = open(os.path.join(result_path, 'all_result.txt'), "a")
         print('Subject:' + str(i))
         print('Subject ' + str(i) + ":", file=all_result_file)
         all_result_file.close()
-        for j in range(3):
+        for j in range(1, 4):
             print("  Session:" + str(j))
             train_specInput = np.load(os.path.join(
                 train_specInput_root_path, f"subject_{i}/section_{j}_data.npy"))
             train_tempInput = np.load(os.path.join(
                 train_tempInput_root_path, f"subject_{i}/section_{j}_data.npy"))
             train_label = np.load(os.path.join(
-                train_label_root_path, f"subject_{i}/section_{j}_label.npy"))
+                train_label_root_path, f"subject_{i}/section_{j}_data.npy"))
 
             index = np.arange(train_specInput.shape[0])
             np.random.shuffle(index)
 
+            # print(train_specInput.shape)
+            # print(train_tempInput.shape)
+            # print(train_label.shape)
+
             train_specInput = train_specInput[index]
             train_tempInput = train_tempInput[index]
             train_label = train_label[index]
+            
+            print(train_specInput.shape)
+            print(train_tempInput.shape)
+            # print(train_label.shape)
 
             train_label = [x+1 for x in train_label]
-            train_label = to_categorical(train_label)
+            train_label = to_categorical(train_label, num_classes=3)
+            print(train_label.shape)
+            # print(train_label)
 
             # Evaluate
             test_specInput = np.load(os.path.join(
@@ -123,10 +135,10 @@ def run():
                 test_tempInput_root_path, f"subject_{i}/section_{j}_data.npy"))
 
             test_label = np.load(os.path.join(
-                test_label_root_path, f"subject_{i}/section_{j}_label.npy"))
+                test_label_root_path, f"subject_{i}/section_{j}_data.npy"))
 
             test_label = [x + 1 for x in test_label]
-            test_label = to_categorical(test_label)
+            test_label = to_categorical(test_label, num_classes=3)
 
             model = sst_model.sst_emotionnet(input_width=input_width, specInput_length=specInput_length, temInput_length=temInput_length,
                                             depth_spec=depth_spec, depth_tem=depth_tem, gr_spec=gr_spec, gr_tem=gr_tem, nb_dense_block=nb_dense_block, nb_class=nb_class)
